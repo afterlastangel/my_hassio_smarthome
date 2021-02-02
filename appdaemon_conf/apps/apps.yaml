@@ -1,0 +1,13 @@
+foscam_c1:
+  module: foscam_c1
+  class: Foscam_C1
+  camsettings:
+    camera_type: C1
+    camera_name: foscam c1 
+    host: !secret camera_ip
+    port: "88"
+    user: !secret camera_username
+    password: !secret camera_password 
+    mqtt_topic: !secret camera_mqtt_topic
+  alarmsettings:
+    motion_sensor: sensor.foscam_motion

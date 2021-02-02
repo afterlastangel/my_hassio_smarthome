@@ -1,0 +1,58 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+logger:
+  default: critical
+  logs:
+    homeassistant.components.sensor: debug
+    homeassistant.components.serial: debug
+    homeassistant.components.sensor.serial: debug
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+smartir:
+
+climate:
+  - platform: smartir
+    name: Living AC
+    unique_id: living_ac
+    device_code: 1260
+    controller_data: remote.remote_controler_remote
+    temperature_sensor: sensor.my_temperature_sensor
+    humidity_sensor: sensor.my_humidity_sensor
+
+sensor:
+  - platform: serial
+    serial_port: /dev/ttyACM0
+    baudrate: 115200
+
+  - platform: template
+    sensors:
+      my_temperature_sensor:
+        friendly_name: Temperature
+        unit_of_measurement: "°C"
+        value_template: "{{ states('sensor.serial_sensor').split(':')[0] | float }}"
+      my_humidity_sensor:
+        friendly_name: Humidity
+        unit_of_measurement: "%"
+        value_template: "{{ states('sensor.serial_sensor').split(':')[1] | float }}"
+
+device_tracker:
+  - platform: nmap_tracker
+    hosts: 192.168.1.0/24
+    interval_seconds: 10
+    consider_home: 30
+
+
+camera:
+  - platform: foscam
+    ip: !secret camera_ip
+    port: 88
+    rtsp_port: 554
+    username: !secret camera_username
+    password: !secret camera_password

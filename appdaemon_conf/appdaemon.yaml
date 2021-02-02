@@ -1,0 +1,24 @@
+appdaemon:
+  plugins:
+    HASS:
+      type: hass
+      ha_url: !secret hass_url
+      token: !secret hass_token 
+    MQTT:
+      type: mqtt
+      client_host: !secret mqtt_client_host
+      client_user: !secret mqtt_client_username
+      client_password: !secret mqtt_client_password 
+  latitude:
+    21.0278
+  longitude:
+    105.834
+  elevation:
+    0
+  time_zone:
+    Asia/Bangkok
+http:
+  url: http://127.0.0.1:5050
+admin:
+api:
+hadashboard:

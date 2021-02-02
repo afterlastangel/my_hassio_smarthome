@@ -1,0 +1,85 @@
+- id: '1612022021737'
+  alias: Tắt đèn và máy lạnh khi ra khỏi nhà
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.le_kien_truc
+    to: not_home
+  condition: []
+  action:
+  - service: climate.turn_off
+    data: {}
+    entity_id: climate.living_ac
+  - type: turn_off
+    device_id: 1370f85becad3588a85dd1bc7664fc40
+    entity_id: light.a_e27
+    domain: light
+  mode: single
+- id: '1612022134861'
+  alias: Bật đèn và máy lạnh khi về nhà
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.le_kien_truc
+    to: home
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 1370f85becad3588a85dd1bc7664fc40
+    entity_id: light.a_e27
+    domain: light
+    brightness_pct: 70
+  - service: climate.turn_on
+    data: {}
+    entity_id: climate.living_ac
+  - delay: '3'
+  - service: climate.set_temperature
+    data:
+      temperature: 26
+    entity_id: climate.living_ac
+  mode: single
+- id: '1612063067217'
+  alias: Báo động khi có chuyển động
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: truc20mse23023/feeds/camera
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: person.le_kien_truc
+      state: home
+  action:
+  - device_id: 0ca21d636a06a37d6d676f4f01f331ba
+    domain: mobile_app
+    type: notify
+    message: Có người vào nhà
+    title: Báo động
+  - device_id: 56bdd0a15b0ddb98cd650b39bb59a668
+    domain: mobile_app
+    type: notify
+    message: Có người vào nhà
+    title: Báo động
+  mode: single
+- id: '1612158495432'
+  alias: Bật máy lạnh khi nhiệt độ lên cao
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.my_temperature_sensor
+    above: 28
+  condition:
+  - condition: zone
+    entity_id: person.le_kien_truc
+    zone: zone.home
+  action:
+  - service: climate.turn_on
+    data: {}
+    entity_id: climate.living_ac
+  - delay: '3'
+  - service: climate.set_temperature
+    data:
+      temperature: 26
+    entity_id: climate.living_ac
+  mode: single
